@@ -1,43 +1,64 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Header from "./components/Header";
-import Feed from "./components/Feed";
-import PostDetail from "./components/PostDetail";
+import Sidebar from "./components/Sidebar";
+import Stories from "./components/Stories";
+import Trending from "./components/Trending";
 import Profile from "./components/Perfil";
 import "./App.css";
 
 function App() {
   const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
   const [view, setView] = useState("feed");
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [likes, setLikes] = useState(0);
 
   useEffect(() => {
     axios
       .get("https://api.thecatapi.com/v1/images/search?limit=10")
       .then((res) => {
-        const data = res.data.map((img, i) => ({
-          id: img.id,
-          image: img.url,
-          likes: Math.floor(Math.random() * 500),
-          user: "cat_user_" + i,
-          caption: "Miren este gato 😺",
-        }));
-        setPosts(data);
+        setPosts(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
   }, []);
 
   return (
-    <div>
-      <Header setView={setView} />
-      
-      {view === "feed" && (
-        <Feed posts={posts} onSelectPost={setSelectedPost} />
-      )}
+    <div className="app">
+      <Sidebar setView={setView} />
 
-      {view === "profile" && <Profile posts={posts} />}
+      <div className="content">
+        {loading && <p>Cargando...</p>}
 
+        {!loading && view === "feed" && (
+          <>
+            <Stories />
+            <Trending posts={posts} onSelect={setSelectedPost} />
+          </>
+        )}
+
+        {view === "profile" && <Profile posts={posts} />}
+      </div>
+
+      {/* 🔥 MODAL DEL POST */}
       {selectedPost && (
-        <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} />
+        <div className="modal">
+          <div className="modal-content">
+            <img src={selectedPost.url} alt="cat" />
+
+            <p>😺 Gatito</p>
+
+            <button onClick={() => setLikes(likes + 1)}>
+              ❤️ {likes}
+            </button>
+
+            <button onClick={() => setSelectedPost(null)}>
+              Cerrar
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

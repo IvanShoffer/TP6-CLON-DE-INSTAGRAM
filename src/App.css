@@ -1,5 +1,15 @@
 body {
   margin: 0;
-  font-family: Arial;
-  background-color: #fafafa;
+  font-family: Arial, sans-serif;
+  background: #050816;
+  color: white;
+}
+
+.app {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
 }
