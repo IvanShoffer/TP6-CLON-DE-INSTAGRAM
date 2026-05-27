@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://api.thecatapi.com/v1/images/search?limit=10")
+      .get("https://api.thecatapi.com/v1/images/search?limit=50")
       .then((res) => {
         setPosts(res.data);
         setLoading(false);
@@ -42,7 +42,7 @@ function App() {
         {view === "profile" && <Profile posts={posts} />}
       </div>
 
-      {/* 🔥 MODAL DEL POST */}
+   
       {selectedPost && (
         <div className="modal">
           <div className="modal-content">
